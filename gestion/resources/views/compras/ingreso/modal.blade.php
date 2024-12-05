@@ -7,7 +7,7 @@
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">x</span>
                 </button>
-                <h4 class="modal-title">Cancelar proveedor</h4>
+                <h4 class="modal-title">Cancelar ingreso</h4>
             </div>
             <div class="modal-body">
                 <p>Confirme si desea cancelar el ingreso del Almacen</p>

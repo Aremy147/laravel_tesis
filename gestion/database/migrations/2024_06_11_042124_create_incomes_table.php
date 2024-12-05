@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('serial_voucher', length:7);
             $table->string('number_voucher', length:10);
             $table->string('status', length:20);
-            $table->decimal('total',total:10,places:2);
+            //$table->decimal('total',total:10,places:2);
             $table->timestamps();
         });
     }

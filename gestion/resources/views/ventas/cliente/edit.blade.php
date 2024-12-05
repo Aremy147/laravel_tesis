@@ -35,7 +35,7 @@
                             <option value="DNI" selected>DNI</option>
                             <option value="RUC">RUC</option>
                             <option value="PAS">PAS</option>
-                        @elseif ($persona->type_document=='DNI')
+                        @elseif ($persona->type_document=='RUC')
                             <option value="DNI">DNI</option>
                             <option value="RUC" selected>RUC</option>
                             <option value="PAS">PAS</option>

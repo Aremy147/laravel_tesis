@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeFormRequest;
+use App\Http\Requests\UpdIncomeFormRequest;
 use App\Models\DetailIncome;
 use App\Models\Income;
 use Exception;
@@ -14,6 +15,10 @@ class IncomeController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index(Request $request)
     {
         //
@@ -22,7 +27,7 @@ class IncomeController extends Controller
             $ingresos=  DB::table('incomes as i')
                         ->join('entities as p','i.provider_id','=','p.id')
                         ->join('detail_incomes as di','i.id','=','di.income_id')
-                        ->select('i.id','i.created_at','p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status',DB::raw('sum(di.quantity*di.purchase_price) as total'))
+                        ->select('i.id',DB::raw("DATE_FORMAT(i.created_at,'%d/%m/%Y') as created_at"),'p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status',DB::raw('sum(di.quantity*di.purchase_price) as total'))
                         ->where('i.number_voucher','LIKE','%'.$query.'%')
                         ->orderBy('i.id','desc')
                         ->groupBy('i.id','i.created_at','p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status')
@@ -79,7 +84,7 @@ class IncomeController extends Controller
             }
             DB::commit();
         }
-        catch (\Exception $e){
+        catch (Exception $e){
             DB::rollBack();
         }
         return redirect('compras/ingreso');
@@ -96,6 +101,7 @@ class IncomeController extends Controller
                     ->join('detail_incomes as di','di.income_id','=','i.id')
                     ->select('i.id','i.created_at','p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status',DB::raw('sum(di.quantity*di.purchase_price) as total'))
                     ->where('i.id','=',$id)
+                    ->groupBy('i.id', 'i.created_at', 'p.name', 'i.type_voucher', 'i.serial_voucher','i.number_voucher','i.status')
                     ->first();
         $detalles=  DB::table('detail_incomes as d')
                     ->join('items as a','d.item_id','=','a.id')
@@ -112,21 +118,52 @@ class IncomeController extends Controller
     public function edit($id)
     {
         //
+        $detalles=  DB::table('detail_incomes as d')
+                    ->join('items as a','d.item_id','=','a.id')
+                    ->select('a.name as articulo','d.quantity','d.purchase_price','d.sale_price')
+                    ->where('d.income_id','=',$id)
+                    ->get();
+        $ingreso=   DB::table('incomes as i')
+                    ->join('entities as p','i.provider_id','=','p.id')
+                    ->join('detail_incomes as di','di.income_id','=','i.id')
+                    ->select('i.id','i.created_at','p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status',DB::raw('sum(di.quantity*di.purchase_price) as total'))
+                    ->where('i.id','=',$id)
+                    ->groupBy('i.id', 'i.created_at', 'p.name', 'i.type_voucher', 'i.serial_voucher','i.number_voucher','i.status')
+                    ->first();
+        return view('compras.ingreso.edit',["ingreso"=>$ingreso,"detalles"=>$detalles]);
         
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdIncomeFormRequest $request,$id)
     {
         //
+        /*
+        $ingreso=   DB::table('incomes as i')
+                    ->join('entities as p','i.provider_id','=','p.id')
+                    ->join('detail_incomes as di','di.income_id','=','i.id')
+                    ->select('i.id','i.created_at','p.name','i.type_voucher','i.serial_voucher','i.number_voucher','i.status',DB::raw('sum(di.quantity*di.purchase_price) as total'))
+                    ->where('i.id','=',$id)
+                    ->groupBy('i.id', 'i.created_at', 'p.name', 'i.type_voucher', 'i.serial_voucher','i.number_voucher','i.status')
+                    ->first();
+        $detalles=  DB::table('detail_incomes as d')
+                    ->join('items as a','d.item_id','=','a.id')
+                    ->select('a.name as articulo','d.quantity','d.purchase_price','d.sale_price')
+                    ->where('d.income_id','=',$id)
+                    ->get();
+        */
+        $ingreso=Income::findOrFail($id);
+        $ingreso->status=$request->get('status');
+        $ingreso->update();
+        return redirect('compras/ingreso');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
         //
         $ingreso=Income::findOrFail($id);

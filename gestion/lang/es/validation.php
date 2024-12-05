@@ -152,6 +152,8 @@ return [
     'uuid'                 => 'El campo :attribute debe ser un UUID válido.',
     'attributes'           => [
         'address'                  => 'dirección',
+        'serial_voucher'           => 'serie de comprobante',
+        'number_voucher'           => 'numero de comprobante',
         'affiliate_url'            => 'URL de afiliado',
         'age'                      => 'edad',
         'amount'                   => 'cantidad',

@@ -23,11 +23,18 @@
                         <tr>
                             <td>{{$in->id}}</td>
                             <td>{{$in->created_at}}</td>
+                            <td>{{$in->name}}</td>
                             <td>{{$in->type_voucher}}:{{$in->serial_voucher}}-{{$in->number_voucher}}</td>
                             <td>{{$in->total}}</td>
-                            <td>{{$in->status}}</td>
+                            <td>{{$in->status}}
+                                
+                            </td>
                             <td>
-                                <a href="{{route('ingreso.show',$in->id)}}"><button class="btn btn-info">Detalles</button></a>
+                                @if ($in->status=='Credito')
+                                    <a href="{{route('ingreso.edit',$in->id) }}"><button class="btn btn-dark">Cambiar estatus</button></a>
+                                @endif
+                                
+                                <a href="{{route('ingreso.show',$in->id) }}"><button class="btn btn-info">Detalles</button></a>
                                 <a href="" data-target="#modal-delete-{{$in->id}}" data-toggle="modal"><button class="btn btn-danger">Anular</button></a>
                             </td>
                         </tr>

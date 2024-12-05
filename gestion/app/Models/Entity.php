@@ -24,5 +24,7 @@ class Entity extends Model
     public function income():HasMany{
         return $this->hasMany(Income::class);
     }
-    
+    public function sale():HasMany{
+        return $this->hasMany(Sale::class);
+    }
 }

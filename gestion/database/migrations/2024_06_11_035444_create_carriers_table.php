@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name',length:50);
             $table->string('type_document',length:20);
             $table->string('n_document',length:15); 
+            $table->boolean('status');
             $table->timestamps();
         });
     }

@@ -27,11 +27,11 @@ class IncomeFormRequest extends FormRequest
             'type_voucher'=>'required|max:20',
             'serial_voucher'=>'max:7',
             'number_voucher'=>'required|max:10',
-            'item_id'=>'required',
+            //'idarticulo'=>'required',
             'status'=>'required',
-            'quantity'=>'required',
-            'sale_price'=>'required',
-            'purchase_price'=>'required'
+            //'cantidad'=>'required',
+            //'precio_compra'=>'required',
+            //'precio_venta'=>'required'
         ];
     }
 }

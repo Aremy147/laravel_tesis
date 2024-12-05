@@ -21,7 +21,7 @@ return new class extends Migration
             );
             $table->tinyInteger('quantity');
             $table->decimal('sale_price',total:10,places:2);
-            $table->decimal('discount',total:10,places:2);
+            //$table->decimal('discount',total:10,places:2);
             $table->timestamps();
         });
     }

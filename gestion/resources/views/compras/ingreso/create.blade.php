@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <form action="{{ url('compras/ingreso') }}" method="post" autocomplete="off">
+    <form action="{{url('compras/ingreso')}}" method="post" autocomplete="off">
         @csrf
         <div class="row">
             <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
@@ -28,7 +28,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
                 <div class="form-group">
                     <label for="type_voucher">Tipo comprobante</label>
                     <select name="type_voucher" id="" class="form-control">
@@ -38,16 +38,26 @@
                     </select>
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
                 <div class="form-group">
                     <label for="serial_voucher">Serie comprobante</label>
                     <input type="text" name="serial_voucher"  value="{{ old('serial_voucher') }}" id="" class="form-control" placeholder="Serie comprobante...">
                 </div>
             </div>
-            <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
+            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
                 <div class="form-group">
                     <label for="number_voucher">Número de comprobante</label>
                     <input type="text" name="number_voucher" required value="{{ old('number_voucher') }}" id="" class="form-control" placeholder="Número de comprobante...">
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
+                <div class="form-group">
+                    <label for="status">Estado del pedido</label>
+                    <select name="status" id="" value="{{ old('status') }}" class="form-control">
+                        <option value="Credito">Credito</option>
+                        <option value="Al contado">Al contado</option>
+                    </select>
+                    
                 </div>
             </div>
         </div>
@@ -66,19 +76,19 @@
                     </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-12">
                         <div class="form-group">
-                            <label for="quantity">Cantidad</label>
+                            <label for="pquantity">Cantidad</label>
                             <input type="number" name="pquantity" id="pquantity" min="0" class="form-control" placeholder="Cantidad...">
                         </div>
                     </div>
                     <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
                         <div class="form-group">
-                            <label for="purchase_price">Precio de compra</label>
+                            <label for="ppurchase_price">Precio de compra</label>
                             <input type="number" name="ppurchase_price" id="ppurchase_price" min="0" step="0.10" class="form-control" placeholder="P. compra...">
                         </div>
                     </div>
                     <div class="col-lg-2 col-sm-2 col-md-2 col-xs-12">
                         <div class="form-group">
-                            <label for="purchase_sale">Precio de venta</label>
+                            <label for="ppurchase_sale">Precio de venta</label>
                             <input type="number" name="ppurchase_sale" id="ppurchase_sale" min="0" step="0.10" class="form-control" placeholder="P. venta...">
                         </div>
                     </div>
@@ -140,21 +150,26 @@
             articulo=$("#pidarticulo option:selected").text();
             cantidad=$("#pquantity").val();
             precio_compra=$("#ppurchase_price").val();
-            precio_venta=$("#ppurchase_sale").val("");
+            precio_venta=$("#ppurchase_sale").val();
 
             if (idarticulo!="" && cantidad!="" && cantidad>0 && precio_compra!="" && precio_venta!=""){
                 subtotal[cont]=(cantidad*precio_compra);
                 total=total+subtotal[cont];
                 
-                let fila='<tr class="selected" id="fila'+cont'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="cantidad[]" value="'+cantidad+'"></td><td><input type="number" name="precio_compra[]" value="'+precio_compra+'"></td><td><input type="number" name="precio_venta[]" value="'+precio_venta+'"></td><td><input type="number" name="precio_venta[]" value="'+precio_venta+'"></td><td>'+subtotal[cont]+'</td></tr>';
+                let fila='<tr class="selected" id="fila'+cont+'"><td><button type="button" class="btn btn-warning" onclick="eliminar('+cont+');">X</button></td><td><input type="hidden" name="item_id[]" value="'+idarticulo+'">'+articulo+'</td><td><input type="number" name="quantity[]" value="'+cantidad+'"></td><td><input type="number" name="purchase_price[]" value="'+precio_compra+'"></td><td><input type="number" name="sale_price[]" value="'+precio_venta+'"></td><td>'+subtotal[cont]+'</td></tr>';
                 cont++;
                 limpiar();
                 $("#total").html("S/. "+total);
+                evaluar();
+                $("#detalles").append(fila);
+            }
+            else{
+               alert("ERROR AL INGRESAR EL DETALLE DE INGRESO,REVISE LOS DATOS DEL ARTICULO") 
             }
         }
         function limpiar(){
             $("#pquantity").val("");
-            $("#pppurchase_price").val("");
+            $("#ppurchase_price").val("");
             $("#ppurchase_sale").val("");
         }
         function evaluar(){
@@ -164,6 +179,12 @@
             else{
                 $("#guardar").hide();
             }
+        }
+        function eliminar(index){
+            total=total-subtotal[index];
+            $("#total").html("S/."+total);
+            $("#fila"+index).remove();
+            evaluar();
         }
     </script>
 @endpush
